@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outil ADP 2026 — Triple Saut ES-TRI — COLL3_EQ10</title>
+<style>
+/* ======= VARIABLES & RESET ======= */
+:root {
+  --c-bg: #f5f4f0;
+  --c-surface: #ffffff;
+  --c-border: #d8d4cc;
+  --c-text: #1a1814;
+  --c-muted: #6b6760;
+  --c-A: #FCEBEB;
+  --c-A-border: #e8a8a8;
+  --c-A-text: #7a2020;
+  --c-B: #FAEEDA;
+  --c-B-border: #d4b870;
+  --c-B-text: #6b4c10;
+  --c-C: #EAF3DE;
+  --c-C-border: #8ec86a;
+  --c-C-text: #2d5a0e;
+  --c-accent: #2563b0;
+  --c-accent-light: #dbeafe;
+  --radius: 8px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--c-bg);color:var(--c-text);font-size:14px;line-height:1.5}
+h1{font-size:1.3rem;font-weight:700}
+h2{font-size:1.1rem;font-weight:600;margin-bottom:12px}
+h3{font-size:0.95rem;font-weight:600;margin-bottom:8px}
+p{margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#eee;padding:7px 8px;text-align:left;border:1px solid var(--c-border);font-weight:600}
+td{padding:6px 8px;border:1px solid var(--c-border);vertical-align:top}
+input[type=text],input[type=number]{padding:5px 8px;border:1px solid var(--c-border);border-radius:4px;font-size:13px;width:100%}
+button{cursor:pointer;border:none;border-radius:var(--radius);padding:9px 18px;font-size:13px;font-weight:600;transition:opacity .2s}
+button:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--c-accent);color:#fff}
+.btn-primary:hover:not(:disabled){opacity:.85}
+.btn-secondary{background:#e5e7eb;color:var(--c-text)}
+.btn-secondary:hover:not(:disabled){background:#d1d5db}
+.btn-success{background:#16a34a;color:#fff}
+.btn-success:hover:not(:disabled){opacity:.85}
+.alert{padding:8px 12px;border-radius:4px;margin:6px 0;font-size:12px}
+.alert-error{background:#fee2e2;border:1px solid #fca5a5;color:#7f1d1d}
+.alert-info{background:#dbeafe;border:1px solid #93c5fd;color:#1e3a5f}
+.alert-warn{background:#fef3c7;border:1px solid #fbbf24;color:#78350f}
+/* ======= LAYOUT ======= */
+#app{max-width:1200px;margin:0 auto;padding:12px}
+header{background:var(--c-surface);border-radius:var(--radius);padding:14px 18px;margin-bottom:12px;border:1px solid var(--c-border);box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.header-badge{background:var(--c-accent);color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px}
+/* ======= ÉTAPES PROGRESSBAR ======= */
+#steps-bar{display:flex;gap:4px;margin-bottom:14px;background:var(--c-surface);border-radius:var(--radius);padding:10px 14px;border:1px solid var(--c-border)}
+.step-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;opacity:.4;transition:opacity .2s;min-width:0}
+.step-item.active,.step-item.done{opacity:1}
+.step-num{width:28px;height:28px;border-radius:50%;background:#ddd;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.step-item.active .step-num{background:var(--c-accent);color:#fff}
+.step-item.done .step-num{background:#16a34a;color:#fff}
+.step-label{font-size:11px;text-align:center;font-weight:600;color:var(--c-muted)}
+.step-item.active .step-label{color:var(--c-accent)}
+.step-item.done .step-label{color:#16a34a}
+.step-arrow{color:#ccc;line-height:28px;margin-top:0;align-self:center}
+/* ======= CARD ======= */
+.card{background:var(--c-surface);border-radius:var(--radius);border:1px solid var(--c-border);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+/* ======= PROFIL COLORS ======= */
+tr.profil-A td:first-child,tr.profil-A td:nth-child(9){background:var(--c-A)}
+tr.profil-B td:first-child,tr.profil-B td:nth-child(9){background:var(--c-B)}
+tr.profil-C td:first-child,tr.profil-C td:nth-child(9){background:var(--c-C)}
+.badge-A{background:var(--c-A);border:1px solid var(--c-A-border);color:var(--c-A-text);padding:2px 8px;border-radius:12px;font-weight:700;font-size:12px}
+.badge-B{background:var(--c-B);border:1px solid var(--c-B-border);color:var(--c-B-text);padding:2px 8px;border-radius:12px;font-weight:700;font-size:12px}
+.badge-C{background:var(--c-C);border:1px solid var(--c-C-border);color:var(--c-C-text);padding:2px 8px;border-radius:12px;font-weight:700;font-size:12px}
+/* ======= BILAN CARDS ======= */
+.bilan-cards{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.bilan-card{flex:1;min-width:120px;padding:12px;border-radius:var(--radius);text-align:center;border:2px solid}
+.bilan-card.A{background:var(--c-A);border-color:var(--c-A-border)}
+.bilan-card.B{background:var(--c-B);border-color:var(--c-B-border)}
+.bilan-card.C{background:var(--c-C);border-color:var(--c-C-border)}
+.bilan-card.total{background:#f0f0f8;border-color:#a0a0d0}
+.bilan-card .big{font-size:2rem;font-weight:700;line-height:1}
+.bilan-card .lbl{font-size:11px;color:var(--c-muted);margin-top:4px}
+/* ======= AXE CHECKBOX ======= */
+.axe-item{border:1px solid var(--c-border);border-radius:var(--radius);padding:12px;margin-bottom:8px;cursor:pointer;transition:background .15s}
+.axe-item.selected{border-color:var(--c-accent);background:var(--c-accent-light)}
+.axe-item label{cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.axe-item input[type=checkbox]{margin-top:2px;width:16px;height:16px;flex-shrink:0}
+.axe-pertinence{font-size:11px;color:var(--c-muted);margin-top:4px;margin-left:24px}
+.axe-badge{display:inline-block;background:#e0e7ff;color:#3730a3;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600}
+/* ======= SLIDER ======= */
+#slider-seances{width:100%;accent-color:var(--c-accent)}
+.slider-info{background:#f8f8f0;border:1px solid var(--c-border);border-radius:var(--radius);padding:12px;margin-top:10px}
+/* ======= PLANIF ======= */
+.seq-header{background:linear-gradient(135deg,#1e3a5f,#2563b0);color:#fff;padding:12px 16px;border-radius:var(--radius) var(--radius) 0 0;margin-bottom:0}
+.seq-block{border:1px solid #2563b0;border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+.indicatif-box{background:#fffbeb;border:1px solid #fbbf24;border-radius:4px;padding:6px 10px;margin:6px 0;font-size:12px}
+/* ======= PRINT ======= */
+@media print{
+  #steps-bar,#input-section,#import-section,.btn-primary,.btn-secondary,.btn-success,#nav-buttons,.no-print{display:none!important}
+  body{background:#fff}
+  .seq-header{background:#2563b0!important;-webkit-print-color-adjust:exact}
+  .print-header{display:block}
+}
+.print-header{display:none}
+/* ======= RESPONSIVE ======= */
+@media(max-width:600px){
+  #steps-bar{flex-wrap:wrap}
+  .step-label{font-size:9px}
+  .bilan-cards{flex-direction:column}
+  table{font-size:11px}
+  td,th{padding:4px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<header>
+  <div>
+    <h1>🏃 Outil ADP 2026 — Triple Saut</h1>
+    <div style="font-size:12px;color:var(--c-muted);margin-top:2px">COLL3_EQ_10 · ES-TRI · CRMEF Inezgane · Section EPS · BOUARGANE</div>
+  </div>
+  <span class="header-badge">ADP 2026</span>
+  <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap" class="no-print">
+    <button class="btn-secondary" onclick="exportCSV()">📥 Export CSV</button>
+    <button class="btn-secondary" onclick="window.print()">🖨️ Imprimer</button>
+  </div>
+  <div class="print-header" style="font-size:12px">
+    APS : Triple Saut · ES-TRI &nbsp;|&nbsp; COLL3_EQ_10 &nbsp;|&nbsp; Date : <span id="print-date"></span>
+  </div>
+</header>
+
+<!-- BARRE ÉTAPES -->
+<div id="steps-bar">
+  <div class="step-item active" id="si1" onclick="goStep(1)">
+    <div class="step-num">1</div>
+    <div class="step-label">Diagnostic</div>
+  </div>
+  <div class="step-arrow">›</div>
+  <div class="step-item" id="si2" onclick="goStep(2)">
+    <div class="step-num">2</div>
+    <div class="step-label">Axes prioritaires</div>
+  </div>
+  <div class="step-arrow">›</div>
+  <div class="step-item" id="si3" onclick="goStep(3)">
+    <div class="step-num">3</div>
+    <div class="step-label">Paramétrage</div>
+  </div>
+  <div class="step-arrow">›</div>
+  <div class="step-item" id="si4" onclick="goStep(4)">
+    <div class="step-num">4</div>
+    <div class="step-label">Planification</div>
+  </div>
+</div>
+
+<!-- ===== ÉTAPE 1 ===== -->
+<div id="step1" class="step-content">
+
+  <!-- SAISIE MANUELLE -->
+  <div class="card no-print" id="input-section">
+    <h2>Saisie manuelle</h2>
+    <p style="color:var(--c-muted);font-size:12px">C1 Performance /10 · C2 Élan+bonds /10 · C3 Rôles juge /10 (ramené sur 10)</p>
+    <table id="saisie-table">
+      <thead><tr><th>Prénom</th><th>OBS-01 C1 Perf /10</th><th>OBS-02 C2 Élan /10</th><th>OBS-03 C3 Juge /10</th><th></th></tr></thead>
+      <tbody id="saisie-body"></tbody>
+    </table>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-secondary" onclick="addRow()">+ Ajouter élève</button>
+      <button class="btn-primary" onclick="analyser()">▶ Analyser la classe</button>
+    </div>
+    <div id="saisie-errors"></div>
+  </div>
+
+  <!-- IMPORT CSV -->
+  <div class="card no-print" id="import-section">
+    <h2>Import CSV terrain (format ADP 2026)</h2>
+    <p style="color:var(--c-muted);font-size:12px">Le fichier sera parcouru entièrement pour trouver l'en-tête "Nom_Eleve".</p>
+    <input type="file" id="csv-file" accept=".csv,.txt" onchange="importCSV(event)" style="margin-bottom:8px">
+    <div id="import-status"></div>
+  </div>
+
+  <!-- RÉSULTATS ÉTAPE 1 -->
+  <div id="results1" style="display:none">
+    <div class="card">
+      <h2>📊 Tableau individuel</h2>
+      <div style="overflow-x:auto">
+        <table id="table-individuel">
+          <thead><tr>
+            <th>Rang</th><th>Prénom</th>
+            <th>C1 Perf /10</th><th>C2 Élan /10</th><th>C3 Juge /10</th>
+            <th>Moy /10</th><th>/20</th>
+            <th>Profil global</th><th>Profil détaillé</th>
+            <th>Lacune(s)</th><th>Axe prioritaire</th><th>SA</th>
+          </tr></thead>
+          <tbody id="tbody-individuel"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📈 Bilan de classe</h2>
+      <div class="bilan-cards" id="bilan-cards"></div>
+      <div id="bilan-obs"></div>
+      <div id="bilan-groupes"></div>
+      <div id="bilan-decision" style="margin-top:10px;padding:10px;border-radius:var(--radius);font-weight:600;font-size:14px"></div>
+    </div>
+
+    <div style="margin-top:10px;text-align:right" class="no-print">
+      <button class="btn-primary" onclick="goStep(2)">Passer à l'étape 2 — Axes prioritaires →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ÉTAPE 2 ===== -->
+<div id="step2" class="step-content" style="display:none">
+  <div class="card">
+    <h2>Sélection des axes prioritaires</h2>
+    <p style="color:var(--c-muted);font-size:12px">Sélectionnez 3 ou 4 axes parmi les 6 proposés (classés par pertinence). Minimum 3 · Maximum 4.</p>
+    <div id="axes-list"></div>
+    <div id="axes-msg" class="alert alert-warn" style="display:none"></div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-secondary" onclick="goStep(1)">← Retour étape 1</button>
+      <button class="btn-primary" id="btn-etape3" onclick="goStep(3)" disabled>Paramétrer le cycle — Étape 3 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ÉTAPE 3 ===== -->
+<div id="step3" class="step-content" style="display:none">
+  <div class="card">
+    <h2>Paramétrage du cycle</h2>
+    <p style="color:var(--c-muted);font-size:12px">Choisissez le nombre de séances du cycle avec le curseur.</p>
+    <div style="margin:16px 0">
+      <label style="font-weight:600">Nombre de séances : <span id="slider-val" style="color:var(--c-accent);font-size:1.3rem">8</span></label>
+      <input type="range" id="slider-seances" min="6" max="10" value="8" oninput="updateSlider()">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--c-muted)"><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+    </div>
+    <div class="slider-info" id="slider-info"></div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-secondary" onclick="goStep(2)">← Retour étape 2</button>
+      <button class="btn-primary" onclick="goStep(4)">Générer la planification — Étape 4 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ÉTAPE 4 ===== -->
+<div id="step4" class="step-content" style="display:none">
+  <div class="card">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px" class="no-print">
+      <button class="btn-secondary" onclick="goStep(3)">← Retour étape 3</button>
+    </div>
+    <h2>Planification dynamique du cycle — Triple Saut ES-TRI</h2>
+    <div id="planif-content"></div>
+    <div id="resume-cycle" class="card" style="margin-top:16px"></div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+/* ========================================================
+   DONNÉES PÉDAGOGIQUES — EXTRAITES DES FICHIERS JOINTS
+   Ne pas modifier — source : référentiel ES-TRI + grilles
+   ======================================================== */
+
+// Seuils des degrés sur /10
+var SEUIL_B = 4.5;   // >= 4.5 = Degré B
+var SEUIL_C = 7.0;   // >= 7.0 = Degré C
+
+// Valeurs de mappage codes métier -> score /10
+var DEGRE_MAP = { "A": 3, "B": 6, "C": 9 };
+var CODE_A = 3; // milieu fourchette Degré A (0-4)
+var CODE_B = 6; // milieu fourchette Degré B (4.5-6.5)
+var CODE_C = 9; // milieu fourchette Degré C (7-10)
+
+// Observables extraits de la grille ES
+var OBS = [
+  {
+    id: "OBS-01",
+    nom: "C1 Performance",
+    codes: { A: "P\u2212", B: "P\u223C", C: "P+" },
+    desc_A: "Élan perturbé \u2014 Performance < seuil note 8",
+    desc_B: "En construction \u2014 Zone progression linéaire",
+    desc_C: "Maîtrisé \u2014 Zone expertise"
+  },
+  {
+    id: "OBS-02",
+    nom: "C2 Élan et bonds",
+    codes: { A: "E\u2212", B: "E\u223C", C: "E+" },
+    desc_A: "Piétinement · cloche-pied vertical · structure non respectée (saut-saut-saut)",
+    desc_B: "Étalonnage instable · cloche-pied partiellement rasant · griffé peu actif",
+    desc_C: "Élan accéléré étalonne sans piétinement · cloche-pied rasant · griffé actif"
+  },
+  {
+    id: "OBS-03",
+    nom: "C3 Rôles juge",
+    codes: { A: "J\u2212", B: "J\u223C", C: "J+" },
+    desc_A: "Juge dilettante \u2014 observations globales · répartition bonds non identifiée",
+    desc_B: "En construction \u2014 valide/invalide avec hésitations · mesure correcte",
+    desc_C: "Juge fiable \u2014 valide correctement · mesure réglementaire · communique observations"
+  }
+];
+
+// 6 Axes extraits du référentiel didactique (référentiel_TripleSaut_ES-TRI_nouveau.txt)
+var AXES = [
+  {
+    id: 1,
+    titre: "Ancrer l\u2019étalonnage de la course d\u2019élan sans piétinement et la structure hop-step-jump dans l\u2019axe",
+    obs_lie: "OBS-02",
+    obs_idx: 1,
+    priorite: "haute",
+    N_cibles: ["N2-1", "N2-2", "N2-3", "N2-7"],
+    SA: "SA-A1",
+    conduites_attendues: "l\u2019élève réalise sa course d\u2019élan sans ajustement de dernière foulée avant la planche dans au moins 2 essais sur 3"
+  },
+  {
+    id: 2,
+    titre: "Conserver la vitesse horizontale \u2014 cloche-pied rasant et griffé actif à chaque appui",
+    obs_lie: "OBS-02",
+    obs_idx: 1,
+    priorite: "moyenne",
+    N_cibles: ["N2-3", "N2-4", "N2-5", "N2-6"],
+    SA: "SA-B1",
+    conduites_attendues: "l\u2019élève projette son bassin vers l\u2019avant au cloche-pied (impulsion rasante) dans au moins 2 tentatives sur 3"
+  },
+  {
+    id: 3,
+    titre: "Structurer les rôles d\u2019observateur et de juge \u2014 répartition des bonds, jugement réglementaire, mesure et communication",
+    obs_lie: "OBS-03",
+    obs_idx: 2,
+    priorite: "consolidation",
+    N_cibles: ["N2-8", "N2-9", "N2-10", "N2-11"],
+    SA: "SA-C1",
+    conduites_attendues: "l\u2019élève identifie correctement la structure hop-step-jump et communique une observation exploitable à son camarade sauteur"
+  },
+  {
+    id: 4,
+    titre: "Intérioriser le rythme des trois impulsions (N2-7) \u2014 fréquence accrue en fin d\u2019élan (N2-2)",
+    obs_lie: "OBS-02",
+    obs_idx: 1,
+    priorite: "N2 pratiquant",
+    N_cibles: ["N2-7", "N2-2"],
+    SA: "SA-B1",
+    conduites_attendues: "l\u2019élève reproduit le rythme pied-pied-pied de manière stable sur 3 essais consécutifs"
+  },
+  {
+    id: 5,
+    titre: "Augmenter les temps de suspension et réduire les temps d\u2019appui (N2-5) \u2014 transition Degré B vers C",
+    obs_lie: "OBS-01",
+    obs_idx: 0,
+    priorite: "transition B\u2192C",
+    N_cibles: ["N2-5", "N2-4"],
+    SA: "SA-B1",
+    conduites_attendues: "l\u2019élève réduit le temps d\u2019appui au sol perçu en recherchant un rebond actif lors de chaque phase du triple saut"
+  },
+  {
+    id: 6,
+    titre: "Améliorer l\u2019utilisation des segments libres \u2014 genou libre actif, double blocage des bras (N2-6, N1-3)",
+    obs_lie: "OBS-01",
+    obs_idx: 0,
+    priorite: "coordination",
+    N_cibles: ["N2-6", "N1-3"],
+    SA: "SA-A1",
+    conduites_attendues: "l\u2019élève utilise activement son genou libre et ses bras en opposition dans au moins 2 bonds sur 3"
+  }
+];
+
+// SA extraites du référentiel
+var SA_DATA = {
+  "SA-A1": "Étalonner sa course d\u2019élan \u2014 structure hop-step-jump (N1-1 · N1-2)",
+  "SA-B1": "Cloche-pied rasant et griffé actif \u2014 conservation vitesse (N1-6 \u2192 N2-4)",
+  "SA-C1": "Approfondissement rôles juge et communication exploitable (N2-8 à N2-11)"
+};
+
+// Table de distribution séances (lignes=nb axes, colonnes=6-10 séances)
+var DISTRIB = {
+  3: { 6:[2,2,2], 7:[2,2,3], 8:[3,2,3], 9:[3,3,3], 10:[3,4,3] },
+  4: { 6:[1,2,2,1], 7:[2,2,2,1], 8:[2,2,2,2], 9:[2,3,2,2], 10:[3,2,3,2] }
+};
+
+// =====================
+// ÉTAT GLOBAL
+// =====================
+var eleves = [];
+var axesSelectionnes = [];
+var nbSeances = 8;
+var stepAtteint = 1; // étape max atteinte
+
+// =====================
+// INIT
+// =====================
+document.getElementById("print-date").textContent = new Date().toLocaleDateString("fr-FR");
+addRow(); addRow(); addRow(); // 3 lignes par défaut
+
+// =====================
+// SAISIE MANUELLE
+// =====================
+function addRow() {
+  var tbody = document.getElementById("saisie-body");
+  var idx = tbody.rows.length;
+  var tr = document.createElement("tr");
+  tr.innerHTML =
+    "<td><input type='text' placeholder='Prénom' id='prenom_"+idx+"'></td>" +
+    "<td><input type='number' min='0' max='10' step='0.1' placeholder='0-10' id='obs1_"+idx+"'></td>" +
+    "<td><input type='number' min='0' max='10' step='0.1' placeholder='0-10' id='obs2_"+idx+"'></td>" +
+    "<td><input type='number' min='0' max='10' step='0.1' placeholder='0-10' id='obs3_"+idx+"'></td>" +
+    "<td><button class='btn-secondary' style='padding:3px 8px;font-size:12px' onclick='removeRow(this)'>×</button></td>";
+  tbody.appendChild(tr);
+}
+
+function removeRow(btn) {
+  btn.closest("tr").remove();
+}
+
+function analyser() {
+  // Lire les lignes manuelles
+  var tbody = document.getElementById("saisie-body");
+  var rows = tbody.rows;
+  var data = [];
+  var errs = [];
+  for (var i = 0; i < rows.length; i++) {
+    var prenom = rows[i].querySelector("input[type=text]").value.trim();
+    var v1 = rows[i].querySelectorAll("input[type=number]")[0].value;
+    var v2 = rows[i].querySelectorAll("input[type=number]")[1].value;
+    var v3 = rows[i].querySelectorAll("input[type=number]")[2].value;
+    if (!prenom && !v1 && !v2 && !v3) continue;
+    if (!prenom) { errs.push("Ligne "+(i+1)+" : prénom obligatoire"); continue; }
+    var n1 = parseFloat(v1), n2 = parseFloat(v2), n3 = parseFloat(v3);
+    if (isNaN(n1)||n1<0||n1>10) { errs.push("Ligne "+(i+1)+" ("+prenom+") : OBS-01 invalide (0-10)"); continue; }
+    if (isNaN(n2)||n2<0||n2>10) { errs.push("Ligne "+(i+1)+" ("+prenom+") : OBS-02 invalide (0-10)"); continue; }
+    if (isNaN(n3)||n3<0||n3>10) { errs.push("Ligne "+(i+1)+" ("+prenom+") : OBS-03 invalide (0-10)"); continue; }
+    data.push({ prenom: prenom, obs: [n1, n2, n3] });
+  }
+  var errDiv = document.getElementById("saisie-errors");
+  if (errs.length > 0) {
+    errDiv.innerHTML = "<div class='alert alert-error'>"+errs.join("<br>")+"</div>";
+  } else {
+    errDiv.innerHTML = "";
+  }
+  if (data.length === 0) {
+    errDiv.innerHTML += "<div class='alert alert-error'>Aucune donnée valide à analyser.</div>";
+    return;
+  }
+  eleves = data;
+  afficherResultats();
+}
+
+// =====================
+// IMPORT CSV — P2 P3 P4
+// Priorité : codes métier > degrés lettres > numériques
+// L'en-tête est cherché à TOUTES les lignes (P2)
+// =====================
+function importCSV(evt) {
+  var file = evt.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var text = e.target.result;
+    var lines = text.split(/\r?\n/);
+    var headerIdx = -1;
+    var headerCols = [];
+    // Chercher ligne contenant "Nom_Eleve" quelle que soit sa position
+    for (var i = 0; i < lines.length; i++) {
+      var cols = parseCSVLine(lines[i]);
+      for (var c = 0; c < cols.length; c++) {
+        if (cols[c].trim().toLowerCase() === "nom_eleve") {
+          headerIdx = i;
+          headerCols = cols.map(function(x){ return x.trim(); });
+          break;
+        }
+      }
+      if (headerIdx >= 0) break;
+    }
+    if (headerIdx < 0) {
+      document.getElementById("import-status").innerHTML =
+        "<div class='alert alert-error'>En-tête 'Nom_Eleve' non trouvé dans le fichier CSV.</div>";
+      return;
+    }
+    // Identifier colonnes OBS
+    var iNom = headerCols.indexOf("Nom_Eleve");
+    // Cherche colonnes par ordre de priorité
+    function findCol(prefixes) {
+      for (var p = 0; p < prefixes.length; p++) {
+        for (var c = 0; c < headerCols.length; c++) {
+          if (headerCols[c].toLowerCase().startsWith(prefixes[p].toLowerCase())) return c;
+        }
+      }
+      return -1;
+    }
+    // Priorité 1 : codes métier OBS01_[Nom]
+    // Priorité 2 : degrés lettres OBS01_Degre
+    // Priorité 3 : numériques OBS1
+    var iO1 = findCol(["OBS01_","obs01_"]);
+    var iO2 = findCol(["OBS02_","obs02_"]);
+    var iO3 = findCol(["OBS03_","obs03_"]);
+    if (iO1 < 0) iO1 = findCol(["OBS1_Degre","obs1_degre"]);
+    if (iO2 < 0) iO2 = findCol(["OBS2_Degre","obs2_degre"]);
+    if (iO3 < 0) iO3 = findCol(["OBS3_Degre","obs3_degre"]);
+    if (iO1 < 0) iO1 = findCol(["OBS1","obs1"]);
+    if (iO2 < 0) iO2 = findCol(["OBS2","obs2"]);
+    if (iO3 < 0) iO3 = findCol(["OBS3","obs3"]);
+
+    var data = [];
+    var ignored = 0;
+    var ignoredReasons = [];
+    for (var i = headerIdx + 1; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line) { ignored++; ignoredReasons.push("Ligne "+(i+1)+" vide"); continue; }
+      var cols = parseCSVLine(line);
+      var nom = iNom >= 0 && cols[iNom] ? cols[iNom].trim() : "";
+      if (!nom || nom.toLowerCase().includes("bilan_classe")) {
+        ignored++;
+        ignoredReasons.push("Ligne "+(i+1)+" ignorée (vide ou BILAN_CLASSE)");
+        continue;
+      }
+      var v1 = parseOBSVal(cols, iO1, headerCols);
+      var v2 = parseOBSVal(cols, iO2, headerCols);
+      var v3 = parseOBSVal(cols, iO3, headerCols);
+      if (v1 === null || v2 === null || v3 === null) {
+        ignored++;
+        ignoredReasons.push("Ligne "+(i+1)+" ("+nom+") : valeur(s) OBS non lisible(s)");
+        continue;
+      }
+      data.push({ prenom: nom, obs: [v1, v2, v3] });
+    }
+    var msg = "<div class='alert alert-info'>"+data.length+" élève(s) importé(s).";
+    if (ignored > 0) msg += " "+ignored+" ligne(s) ignorée(s).";
+    msg += "</div>";
+    if (ignored > 0) {
+      msg += "<details style='font-size:11px;margin-top:4px'><summary>Détail des lignes ignorées</summary><ul style='padding-left:16px'>";
+      ignoredReasons.slice(0,20).forEach(function(r){ msg += "<li>"+r+"</li>"; });
+      msg += "</ul></details>";
+    }
+    document.getElementById("import-status").innerHTML = msg;
+    if (data.length > 0) {
+      eleves = data;
+      afficherResultats();
+    }
+  };
+  reader.readAsText(file, "UTF-8");
+}
+
+// Parse une valeur OBS depuis une colonne CSV
+function parseOBSVal(cols, idx, headers) {
+  if (idx < 0 || !cols[idx]) return null;
+  var raw = cols[idx].trim().toUpperCase();
+  // Codes métier ou degrés lettres
+  if (raw === "A") return DEGRE_MAP["A"];
+  if (raw === "B") return DEGRE_MAP["B"];
+  if (raw === "C") return DEGRE_MAP["C"];
+  // Codes P+, E-, J~, etc.
+  if (raw.includes("+")) return DEGRE_MAP["C"];
+  if (raw.includes("-")) return DEGRE_MAP["A"];
+  if (raw.includes("~")) return DEGRE_MAP["B"];
+  // Numérique direct
+  var n = parseFloat(raw.replace(",","."));
+  if (!isNaN(n) && n >= 0 && n <= 10) return n;
+  return null;
+}
+
+// Parse une ligne CSV en tableau de champs
+function parseCSVLine(line) {
+  var cols = [];
+  var current = "";
+  var inQuotes = false;
+  for (var i = 0; i < line.length; i++) {
+    var ch = line[i];
+    if (ch === '"') { inQuotes = !inQuotes; continue; }
+    if (ch === "," && !inQuotes) { cols.push(current); current = ""; continue; }
+    if ((ch === ";" || ch === "\t") && !inQuotes) { cols.push(current); current = ""; continue; }
+    current += ch;
+  }
+  cols.push(current);
+  return cols;
+}
+
+// =====================
+// CALCULS PÉDAGOGIQUES
+// =====================
+function getProfil(val) {
+  if (val >= SEUIL_C) return "C";
+  if (val >= SEUIL_B) return "B";
+  return "A";
+}
+
+function getLacunes(obs_vals) {
+  var lacunes = [];
+  for (var i = 0; i < obs_vals.length; i++) {
+    if (obs_vals[i] < SEUIL_B) {
+      lacunes.push({ idx: i, val: obs_vals[i], obs: OBS[i] });
+    }
+  }
+  lacunes.sort(function(a,b){ return a.val - b.val; });
+  return lacunes;
+}
+
+function getAxePrioritaire(lacunes, profil) {
+  if (lacunes.length === 0) {
+    if (profil === "C") return "Consolider les acquis N2 \u2014 approfondissement C3 rôles juge";
+    return "Maintenir et approfondir \u2014 tutorat possible";
+  }
+  var L1 = lacunes[0];
+  if (L1.obs.id === "OBS-02") {
+    if (L1.val < 3) return "Axe 1 URGENT \u2014 ancrer structure hop-step-jump et étalonnage élan (N1-1 · N1-2)";
+    return "Axe 2 \u2014 cloche-pied rasant et griffé actif pour conserver la vitesse (N1-6 \u2192 N2-4)";
+  }
+  if (L1.obs.id === "OBS-01") {
+    return "Axe 5 \u2014 améliorer la performance par réduction des temps d\u2019appui (N2-5)";
+  }
+  if (L1.obs.id === "OBS-03") {
+    return "Axe 3 \u2014 structurer les rôles juge/observateur et communication exploitable";
+  }
+  return "Axe 1 \u2014 ancrage des fondamentaux N1";
+}
+
+function getSA(lacunes, profil) {
+  if (lacunes.length === 0) return SA_DATA["SA-C1"];
+  var L1 = lacunes[0];
+  if (L1.obs.id === "OBS-02" && L1.val < SEUIL_B) return SA_DATA["SA-A1"];
+  if (L1.obs.id === "OBS-02") return SA_DATA["SA-B1"];
+  if (L1.obs.id === "OBS-03") return SA_DATA["SA-C1"];
+  return SA_DATA["SA-B1"];
+}
+
+// =====================
+// AFFICHAGE RÉSULTATS
+// =====================
+function afficherResultats() {
+  // Calculs par élève
+  var calcules = eleves.map(function(el) {
+    var moy = (el.obs[0] + el.obs[1] + el.obs[2]) / 3;
+    var note20 = Math.round(moy * 2 * 10) / 10;
+    var profilG = getProfil(moy);
+    var profilD = [getProfil(el.obs[0]), getProfil(el.obs[1]), getProfil(el.obs[2])];
+    var lacunes = getLacunes(el.obs);
+    var axe = getAxePrioritaire(lacunes, profilG);
+    var sa = getSA(lacunes, profilG);
+    return { prenom: el.prenom, obs: el.obs, moy: moy, note20: note20, profilG: profilG, profilD: profilD, lacunes: lacunes, axe: axe, sa: sa };
+  });
+  // Tri par rang
+  var triee = calcules.slice().sort(function(a,b){ return b.moy - a.moy; });
+  // Attribuer rang (ex-aequo)
+  var rang = 1;
+  for (var i = 0; i < triee.length; i++) {
+    if (i > 0 && triee[i].moy < triee[i-1].moy) rang = i+1;
+    triee[i].rang = rang;
+  }
+  // Map rang -> calcule
+  calcules.forEach(function(c) {
+    var found = triee.find(function(t){ return t.prenom === c.prenom && t.moy === c.moy; });
+    c.rang = found ? found.rang : "-";
+  });
+
+  // Tableau individuel
+  var tbody = document.getElementById("tbody-individuel");
+  tbody.innerHTML = "";
+  calcules.forEach(function(c) {
+    var tr = document.createElement("tr");
+    tr.className = "profil-"+c.profilG;
+    var lacStr = c.lacunes.length === 0 ? "Aucune lacune identifiée" :
+      c.lacunes.map(function(l,i){ return "L"+(i+1)+" \u2014 "+l.obs.nom+" : "+l.val.toFixed(1)+"/10"; }).join("<br>");
+    tr.innerHTML =
+      "<td>"+c.rang+"</td>"+
+      "<td><strong>"+c.prenom+"</strong></td>"+
+      "<td>"+c.obs[0].toFixed(1)+"</td>"+
+      "<td>"+c.obs[1].toFixed(1)+"</td>"+
+      "<td>"+c.obs[2].toFixed(1)+"</td>"+
+      "<td><strong>"+c.moy.toFixed(1)+"</strong></td>"+
+      "<td>"+c.note20.toFixed(1)+"</td>"+
+      "<td><span class='badge-"+c.profilG+"'>"+c.profilG+"</span></td>"+
+      "<td>"+c.profilD.join(" / ")+"</td>"+
+      "<td style='font-size:11px'>"+lacStr+"</td>"+
+      "<td style='font-size:11px'>"+c.axe+"</td>"+
+      "<td style='font-size:11px'>"+c.sa+"</td>";
+    tbody.appendChild(tr);
+  });
+
+  // Bilan de classe
+  var nbA = calcules.filter(function(c){ return c.profilG==="A"; }).length;
+  var nbB = calcules.filter(function(c){ return c.profilG==="B"; }).length;
+  var nbC = calcules.filter(function(c){ return c.profilG==="C"; }).length;
+  var total = calcules.length;
+  var moyClasse = calcules.reduce(function(s,c){ return s+c.moy; }, 0) / total;
+  var moy20 = calcules.reduce(function(s,c){ return s+c.note20; }, 0) / total;
+  var pA = Math.round(nbA/total*100), pB = Math.round(nbB/total*100), pC = Math.round(nbC/total*100);
+
+  document.getElementById("bilan-cards").innerHTML =
+    "<div class='bilan-card A'><div class='big'>"+nbA+"</div><div class='lbl'>Profil A \u2014 "+pA+"%</div></div>" +
+    "<div class='bilan-card B'><div class='big'>"+nbB+"</div><div class='lbl'>Profil B \u2014 "+pB+"%</div></div>" +
+    "<div class='bilan-card C'><div class='big'>"+nbC+"</div><div class='lbl'>Profil C \u2014 "+pC+"%</div></div>" +
+    "<div class='bilan-card total'><div class='big'>"+moyClasse.toFixed(1)+"</div><div class='lbl'>Moy. classe /10<br>"+moy20.toFixed(1)+" /20</div></div>";
+
+  // Analyse par observable
+  var moyObs = [0,1,2].map(function(i){ return calcules.reduce(function(s,c){ return s+c.obs[i]; },0)/total; });
+  var obsHtml = "<h3>Analyse par observable</h3><table><thead><tr><th>Observable</th><th>Moy. classe</th><th>Diagnostic collectif</th><th>SA prioritaire</th></tr></thead><tbody>";
+  moyObs.forEach(function(moy, i) {
+    var diag, sa;
+    if (moy < SEUIL_B) { diag = "<span style='color:#b91c1c'>⚠ Lacune collective \u2014 à renforcer</span>"; sa = SA_DATA["SA-A1"]; }
+    else if (moy < SEUIL_C) { diag = "<span style='color:#b45309'>→ En cours \u2014 consolider</span>"; sa = SA_DATA["SA-B1"]; }
+    else { diag = "<span style='color:#166534'>✓ Bon niveau \u2014 approfondir</span>"; sa = SA_DATA["SA-C1"]; }
+    obsHtml += "<tr><td>"+OBS[i].nom+"</td><td>"+moy.toFixed(1)+"/10</td><td>"+diag+"</td><td style='font-size:11px'>"+sa+"</td></tr>";
+  });
+  obsHtml += "</tbody></table>";
+  document.getElementById("bilan-obs").innerHTML = obsHtml;
+
+  // Groupes de besoin
+  var groupesHtml = "<h3 style='margin-top:12px'>Groupes de besoin</h3><table><thead><tr><th>Profil</th><th>Effectif</th><th>%</th><th>SA associée</th></tr></thead><tbody>";
+  if (nbA>0) groupesHtml += "<tr><td><span class='badge-A'>A \u2014 Débutant</span></td><td>"+nbA+"</td><td>"+pA+"%</td><td style='font-size:11px'>"+SA_DATA["SA-A1"]+"</td></tr>";
+  if (nbB>0) groupesHtml += "<tr><td><span class='badge-B'>B \u2014 Intermédiaire</span></td><td>"+nbB+"</td><td>"+pB+"%</td><td style='font-size:11px'>"+SA_DATA["SA-B1"]+"</td></tr>";
+  if (nbC>0) groupesHtml += "<tr><td><span class='badge-C'>C \u2014 Avancé</span></td><td>"+nbC+"</td><td>"+pC+"%</td><td style='font-size:11px'>"+SA_DATA["SA-C1"]+"</td></tr>";
+  groupesHtml += "</tbody></table>";
+  document.getElementById("bilan-groupes").innerHTML = groupesHtml;
+
+  // Décision dominante
+  var decision, decStyle;
+  if (nbA >= nbB && nbA >= nbC) {
+    decision = "Classe débutante \u2014 Priorité fondamentaux N1 (étalonnage élan · structure hop-step-jump)";
+    decStyle = "background:var(--c-A);border:2px solid var(--c-A-border);color:var(--c-A-text)";
+  } else if (nbB >= nbA && nbB >= nbC) {
+    decision = "Classe intermédiaire \u2014 Différenciation A/B sur cloche-pied rasant et griffé actif";
+    decStyle = "background:var(--c-B);border:2px solid var(--c-B-border);color:var(--c-B-text)";
+  } else {
+    decision = "Classe avancée \u2014 Approfondissement N2 et tutorat C \u2192 B/A";
+    decStyle = "background:var(--c-C);border:2px solid var(--c-C-border);color:var(--c-C-text)";
+  }
+  document.getElementById("bilan-decision").setAttribute("style", decStyle+";padding:12px;border-radius:8px");
+  document.getElementById("bilan-decision").innerHTML = "📋 Décision automatique : "+decision;
+
+  // Stocker pour étape 2
+  window._calcules = calcules;
+  window._moyObs = moyObs;
+  window._stats = { nbA: nbA, nbB: nbB, nbC: nbC, total: total, moyClasse: moyClasse };
+
+  // Afficher section résultats
+  document.getElementById("results1").style.display = "block";
+  stepAtteint = Math.max(stepAtteint, 1);
+  construireAxes();
+}
+
+// =====================
+// ÉTAPE 2 — AXES
+// =====================
+function construireAxes() {
+  var moyObs = window._moyObs || [5,5,5];
+  var stats = window._stats || { nbA:0, nbB:0, nbC:0, total:1 };
+  var calcules = window._calcules || [];
+
+  // Calculer pertinence de chaque axe
+  AXES.forEach(function(ax) {
+    var obsIdx = ax.obs_idx;
+    var nbLacune = calcules.filter(function(c){ return c.obs[obsIdx] < SEUIL_B; }).length;
+    ax.pertinence = stats.total > 0 ? Math.round(nbLacune / stats.total * 100) : 0;
+    ax.moy_classe = moyObs[obsIdx] ? moyObs[obsIdx].toFixed(1) : "-";
+  });
+  // Trier par pertinence desc
+  var sorted = AXES.slice().sort(function(a,b){ return b.pertinence - a.pertinence; });
+
+  var html = "";
+  sorted.forEach(function(ax, i) {
+    html +=
+      "<div class='axe-item' id='axe-item-"+ax.id+"' onclick='toggleAxe("+ax.id+")'>" +
+      "<label><input type='checkbox' id='axe-cb-"+ax.id+"' onchange='checkAxeChange()' onclick='event.stopPropagation()'>" +
+      "<div><strong>Axe "+ax.id+"</strong> <span class='axe-badge'>"+ax.priorite+"</span> \u2014 "+ax.titre +
+      "</div></label>" +
+      "<div class='axe-pertinence'>" +
+      "Pertinence : <strong>"+ax.pertinence+"%</strong> des élèves concernés &nbsp;|&nbsp; " +
+      "Observable lié : "+ax.obs_lie+" &nbsp;|&nbsp; Moy. classe : "+ax.moy_classe+"/10 &nbsp;|&nbsp; " +
+      "SA associée : <strong>"+ax.SA+"</strong>" +
+      "</div></div>";
+  });
+  document.getElementById("axes-list").innerHTML = html;
+}
+
+function toggleAxe(id) {
+  var cb = document.getElementById("axe-cb-"+id);
+  cb.checked = !cb.checked;
+  checkAxeChange();
+}
+
+function checkAxeChange() {
+  var checked = [];
+  AXES.forEach(function(ax) {
+    var cb = document.getElementById("axe-cb-"+ax.id);
+    if (cb && cb.checked) checked.push(ax.id);
+  });
+  // Bloquer le 5e
+  if (checked.length > 4) {
+    // Décocher le dernier coché
+    var last = checked[checked.length-1];
+    document.getElementById("axe-cb-"+last).checked = false;
+    checked.pop();
+    document.getElementById("axes-msg").style.display = "block";
+    document.getElementById("axes-msg").textContent = "Maximum 4 axes atteint. Décochez un axe pour en sélectionner un autre.";
+  } else {
+    document.getElementById("axes-msg").style.display = "none";
+  }
+  // Mettre à jour styles
+  AXES.forEach(function(ax) {
+    var cb = document.getElementById("axe-cb-"+ax.id);
+    var item = document.getElementById("axe-item-"+ax.id);
+    if (cb && item) item.className = cb.checked ? "axe-item selected" : "axe-item";
+  });
+  axesSelectionnes = checked;
+  // Activer bouton si 3 ou 4
+  var btn = document.getElementById("btn-etape3");
+  btn.disabled = (checked.length < 3);
+}
+
+// =====================
+// ÉTAPE 3 — SLIDER
+// =====================
+function updateSlider() {
+  nbSeances = parseInt(document.getElementById("slider-seances").value);
+  document.getElementById("slider-val").textContent = nbSeances;
+  renderSliderInfo();
+}
+
+function renderSliderInfo() {
+  var nbAxes = axesSelectionnes.length;
+  if (nbAxes < 3 || nbAxes > 4) {
+    document.getElementById("slider-info").innerHTML = "<em>Retournez à l'étape 2 pour sélectionner les axes.</em>";
+    return;
+  }
+  var distrib = DISTRIB[nbAxes][nbSeances];
+  if (!distrib) { document.getElementById("slider-info").innerHTML = "Distribution non disponible."; return; }
+  var html = "<strong>Cycle de "+nbSeances+" séances &nbsp;·&nbsp; "+nbAxes+" séquences &nbsp;·&nbsp; distribution : ["+distrib.join("+")+"]</strong><hr style='margin:8px 0'>";
+  distrib.forEach(function(nb, i) {
+    var axeId = axesSelectionnes[i];
+    var ax = AXES.find(function(a){ return a.id === axeId; });
+    html += "<div style='margin:4px 0;padding:4px 8px;background:#f0f4ff;border-radius:4px;border-left:3px solid var(--c-accent)'>";
+    html += "<strong>Séquence "+(i+1)+"</strong> ("+nb+" séance"+(nb>1?"s":"")+")"+(ax?" \u2014 Axe "+ax.id+" : "+ax.titre:"");
+    html += "</div>";
+  });
+  document.getElementById("slider-info").innerHTML = html;
+}
+
+// =====================
+// ÉTAPE 4 — PLANIFICATION
+// =====================
+function genererPlanif() {
+  var nbAxes = axesSelectionnes.length;
+  var distrib = DISTRIB[nbAxes] ? DISTRIB[nbAxes][nbSeances] : null;
+  if (!distrib) { document.getElementById("planif-content").innerHTML = "<div class='alert alert-error'>Distribution non disponible.</div>"; return; }
+  var stats = window._stats || { nbA:0, nbB:0, nbC:0, total:1, moyClasse:5 };
+  var html = "";
+  var seanceGlobale = 0;
+
+  distrib.forEach(function(nbSeancesSeq, seqIdx) {
+    var axeId = axesSelectionnes[seqIdx];
+    var ax = AXES.find(function(a){ return a.id === axeId; });
+    var axeTitre = ax ? ax.titre : "Axe "+axeId;
+    var axeSA = ax ? ax.SA : "SA-A1";
+    // Objectif de séquence
+    var objSeq;
+    if (seqIdx === 0) objSeq = "Ancrage fondamentaux pour toute la classe \u2014 tous groupes";
+    else if (seqIdx === distrib.length-1) objSeq = "Consolidation du niveau B · approfondissement C · évaluation formative";
+    else objSeq = "Différenciation A/B/C active \u2014 axes combinés "+axesSelectionnes.slice(0,seqIdx+1).join("+");
+
+    html += "<div class='seq-block'>";
+    html += "<div class='seq-header'>";
+    html += "<strong>Séquence "+(seqIdx+1)+"</strong> \u2014 "+axeTitre;
+    html += "<br><span style='font-size:12px;opacity:.85'>"+nbSeancesSeq+" séance"+(nbSeancesSeq>1?"s":"")+" &nbsp;|&nbsp; Objectif : "+objSeq+"</span>";
+    html += "</div>";
+    html += "<div style='overflow-x:auto'><table>";
+    html += "<thead><tr style='background:#f8faff'>" +
+      "<th>N° séance</th><th>Axe dominant</th><th>Objectif de séance</th>" +
+      "<th style='background:var(--c-A)'>Groupe A \u2014 Débutants<br><small>SA + consigne + critère</small></th>" +
+      "<th style='background:var(--c-B)'>Groupe B \u2014 Intermédiaires<br><small>SA + consigne + critère</small></th>" +
+      "<th style='background:var(--c-C)'>Groupe C \u2014 Avancés<br><small>SA + consigne + critère</small></th>" +
+      "</tr></thead><tbody>";
+
+    for (var s = 0; s < nbSeancesSeq; s++) {
+      seanceGlobale++;
+      var objSean = getObjSean(seqIdx, s, nbSeancesSeq, ax, seanceGlobale, nbSeances);
+      var cellA = getCellGroupe("A", seqIdx, s, ax);
+      var cellB = getCellGroupe("B", seqIdx, s, ax);
+      var cellC = getCellGroupe("C", seqIdx, s, ax);
+      html += "<tr>";
+      html += "<td style='text-align:center;font-weight:700'>S"+seanceGlobale+"</td>";
+      html += "<td style='font-size:12px'>Axe "+(ax?ax.id:"?")+"</td>";
+      html += "<td style='font-size:12px'>"+objSean+"</td>";
+      html += "<td style='background:var(--c-A);font-size:12px'>"+cellA+"</td>";
+      html += "<td style='background:var(--c-B);font-size:12px'>"+cellB+"</td>";
+      html += "<td style='background:var(--c-C);font-size:12px'>"+cellC+"</td>";
+      html += "</tr>";
+      // Indicateur de passage (sauf dernière séance de la séquence)
+      if (s < nbSeancesSeq - 1) {
+        var indic = ax ? ax.conduites_attendues : "observer la progression de l\u2019élève sur l\u2019observable lié";
+        html += "<tr><td colspan='6'><div class='indicatif-box'>📋 <strong>À observer avant la séance suivante</strong> \u2014 "+indic+"<br><span style='font-size:11px;color:var(--c-muted)'>(Indicatif \u2014 décision de progression : vous)</span></div></td></tr>";
+      }
+    }
+    html += "</tbody></table></div></div>";
+  });
+
+  document.getElementById("planif-content").innerHTML = html;
+
+  // Résumé du cycle
+  var profilDom = (stats.nbA >= stats.nbB && stats.nbA >= stats.nbC) ? "A" : (stats.nbB >= stats.nbC ? "B" : "C");
+  var nbDom = stats[("nb"+profilDom)];
+  var pDom = stats.total > 0 ? Math.round(nbDom/stats.total*100) : 0;
+  var resumeHtml = "<h2>Résumé du cycle</h2>";
+  resumeHtml += "<table><thead><tr><th>Séquence</th><th>Axe(s) travaillé(s)</th><th>Nb séances</th><th>Profil dominant ciblé</th></tr></thead><tbody>";
+  distrib.forEach(function(nb, i) {
+    var axeId = axesSelectionnes[i];
+    var ax = AXES.find(function(a){ return a.id === axeId; });
+    var cible = i === 0 ? "Tous (ancrage)" : (i === distrib.length-1 ? "B (consolidation) · C (approfondissement)" : "A/B/C différenciés");
+    resumeHtml += "<tr><td>Séquence "+(i+1)+"</td><td>"+(ax?"Axe "+ax.id+" \u2014 "+ax.titre:"?")+"</td><td>"+nb+"</td><td>"+cible+"</td></tr>";
+  });
+  resumeHtml += "</tbody></table>";
+  resumeHtml += "<div class='alert alert-info' style='margin-top:12px'>";
+  resumeHtml += "Ce cycle de <strong>"+nbSeances+" séances</strong> cible <strong>"+nbAxes+" axes prioritaires</strong>. ";
+  resumeHtml += "Profil le plus concerné : <strong>"+profilDom+"</strong> ("+nbDom+" élève"+(nbDom>1?"s":"")+" &middot; "+pDom+"%). ";
+  resumeHtml += "Réévaluer après la séquence 2 avec une nouvelle collecte terrain.";
+  resumeHtml += "<br><small>⚠ Rappel : cet outil ne produit pas de note. La décision finale reste toujours à l'enseignant.</small>";
+  resumeHtml += "</div>";
+  document.getElementById("resume-cycle").innerHTML = resumeHtml;
+}
+
+// Objectif de séance selon position
+function getObjSean(seqIdx, sIdx, total, ax, seanceG, totalCycle) {
+  if (seanceG === totalCycle) return "Évaluation formative ou tournoi officiel \u2014 bilan du cycle";
+  if (seqIdx === 0 && sIdx === 0) return "Découverte des observables \u2014 positionnement initial de chaque élève";
+  if (sIdx === total-1) return "Bilan de séquence \u2014 consolidation et repérage des acquis";
+  if (sIdx === 0) return "Lancement de la séquence \u2014 présentation de l\u2019axe et mise en projet";
+  return "Approfondissement de l\u2019axe "+(ax?ax.id:"")+" \u2014 différenciation A/B/C";
+}
+
+// Contenu cellule groupe A/B/C
+function getCellGroupe(groupe, seqIdx, sIdx, ax) {
+  var sa, consigne, critere;
+  if (groupe === "A") {
+    sa = "SA-A1 \u2014 "+SA_DATA["SA-A1"];
+    consigne = seqIdx === 0
+      ? "Partir d\u2019une marque fixe au sol et réaliser 8 appuis sans s\u2019arrêter avant la planche"
+      : "Répéter le départ depuis la même marque \u2014 3 essais \u2014 compter ses appuis à voix haute";
+    critere = "L\u2019élève arrive à la planche sans piétinement dans au moins 2 essais sur 3";
+  } else if (groupe === "B") {
+    sa = "SA-B1 \u2014 "+SA_DATA["SA-B1"];
+    consigne = seqIdx === 0
+      ? "Réaliser le cloche-pied en cherchant à projeter le bassin vers l\u2019avant (pas vers le haut)"
+      : "Poser le pied en griffant le sol : le pied revient vers l\u2019arrière au contact \u2014 3 essais";
+    critere = "Le cloche-pied est visible rasant dans au moins 2 sauts sur 3 à l\u2019observation de l\u2019enseignant";
+  } else {
+    sa = "SA-C1 \u2014 "+SA_DATA["SA-C1"];
+    consigne = seqIdx === 0
+      ? "Observer un camarade et identifier les trois phases \u2014 rédiger une observation exploitable en 1 phrase"
+      : "En rôle de juge : valider/invalider chaque saut et communiquer une mesure réglementaire précise";
+    critere = "L\u2019élève communique une observation correcte (structure des bonds identifiée) pour chaque essai observé";
+  }
+  return "<strong>"+sa+"</strong><br><em>"+consigne+"</em><br><span style='color:var(--c-muted)'>✓ "+critere+"</span>";
+}
+
+// =====================
+// NAVIGATION ÉTAPES
+// =====================
+function goStep(n) {
+  // Vérifications
+  if (n > 1 && (!window._calcules || window._calcules.length === 0)) {
+    alert("Veuillez d\u2019abord analyser la classe (Étape 1).");
+    return;
+  }
+  if (n > 2 && axesSelectionnes.length < 3) {
+    alert("Veuillez sélectionner au moins 3 axes (Étape 2).");
+    return;
+  }
+  // Réinitialisation en arrière
+  if (n < 3) { /* garder axes */ }
+  if (n < 2) { axesSelectionnes = []; }
+
+  var steps = [1,2,3,4];
+  steps.forEach(function(s) {
+    document.getElementById("step"+s).style.display = s===n ? "block" : "none";
+    var si = document.getElementById("si"+s);
+    si.className = "step-item";
+    if (s === n) si.className += " active";
+    else if (s < n || s <= stepAtteint) si.className += " done";
+  });
+  stepAtteint = Math.max(stepAtteint, n);
+
+  if (n === 3) {
+    updateSlider();
+    renderSliderInfo();
+  }
+  if (n === 4) {
+    genererPlanif();
+  }
+  window.scrollTo(0, 0);
+}
+
+// =====================
+// EXPORT CSV
+// =====================
+function exportCSV() {
+  if (!window._calcules || window._calcules.length === 0) {
+    alert("Analysez d\u2019abord la classe avant d\u2019exporter.");
+    return;
+  }
+  var BOM = "\uFEFF";
+  var header = ["Prénom","Code OBS-01","OBS-01 /10","Code OBS-02","OBS-02 /10","Code OBS-03","OBS-03 /10","Moyenne /10","Note /20","Rang","Profil global","Profil détaillé","Lacune 1","SA recommandée"].join(";");
+  var rows = window._calcules.map(function(c) {
+    var codes = c.obs.map(function(v, i) {
+      var p = getProfil(v);
+      return OBS[i].codes[p];
+    });
+    var lacune1 = c.lacunes.length > 0 ? "L1 - "+c.lacunes[0].obs.nom+" : "+c.lacunes[0].val.toFixed(1)+"/10" : "Aucune";
+    return [
+      c.prenom, codes[0], c.obs[0].toFixed(1), codes[1], c.obs[1].toFixed(1), codes[2], c.obs[2].toFixed(1),
+      c.moy.toFixed(1), c.note20.toFixed(1), c.rang, c.profilG, c.profilD.join("/"), lacune1, c.sa
+    ].join(";");
+  });
+  var csv = BOM + header + "\n" + rows.join("\n");
+  var date = new Date().toISOString().split("T")[0].replace(/-/g,"");
+  var filename = "outil_v0_TripleSaut_ES-TRI_"+date+".csv";
+  var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// =====================
+// INIT SLIDER ET ÉTAPE 3
+// =====================
+document.getElementById("slider-seances").addEventListener("input", updateSlider);
+updateSlider();
+</script>
+</body>
+</html>
